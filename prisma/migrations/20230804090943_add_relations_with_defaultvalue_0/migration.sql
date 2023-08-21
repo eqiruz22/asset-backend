@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Product` MODIFY `userId` INTEGER NOT NULL DEFAULT 0;

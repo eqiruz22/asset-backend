@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Int
+  createdAt DateTime @default(now())
+  user      Users    @relation(fields: [userId], references: [id])
+  userId    Int      @default(0)
+}
+
+model Users {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  firstName String?
+  lastName  String?
+  password  String
+  createdAt DateTime  @default(now())
+  product   Product[]
+  sbu       Sbu[]
+}
+
+model Category {
+  id           Int       @id @default(autoincrement())
+  categoryName String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime?
+}
+
+model Sbu {
+  id        Int       @id @default(autoincrement())
+  sbuName   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  user      Users     @relation(fields: [createdBy], references: [id])
+  createdBy Int       @default(0)
+}
