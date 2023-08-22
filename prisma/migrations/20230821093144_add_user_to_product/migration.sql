@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `Product` ADD COLUMN `userId` INTEGER NOT NULL;
+ALTER TABLE `product` ADD COLUMN `userId` INTEGER NOT NULL;
 
 -- AddForeignKey
 ALTER TABLE `Product` ADD CONSTRAINT `Product_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `Users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
