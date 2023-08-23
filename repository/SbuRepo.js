@@ -5,7 +5,21 @@ const prisma = new PrismaClient();
 class SbuRepo {
   async findAll() {
     try {
-      const data = await prisma.sbu.findMany();
+      const data = await prisma.sbu.findMany({
+        select: {
+          id: true,
+          sbuName: true,
+          createdAt: true,
+          updatedAt: true,
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
+          },
+        },
+      });
       return data;
     } catch (error) {
       throw error;
@@ -20,11 +34,14 @@ class SbuRepo {
     if (!name) {
       throw new Error("SBU name is required!");
     }
+    if (!user) {
+      throw new Error("user id is required!");
+    }
     try {
       await prisma.sbu.create({
         data: {
           sbuName: name,
-          user: user,
+          createdBy: user,
         },
       });
       return "success create new SBU";
@@ -43,6 +60,19 @@ class SbuRepo {
         where: {
           id: isNumber,
         },
+        select: {
+          id: true,
+          sbuName: true,
+          createdAt: true,
+          updatedAt: true,
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
+          },
+        },
       });
       if (!data) {
         throw new Error(`SBU id ${id} not found`);
@@ -53,13 +83,20 @@ class SbuRepo {
     }
   }
 
-  async update(name, id) {
+  async update(name, user, id) {
     const isNumber = Number(id);
+    const isUser = Number(user);
     if (isNaN(isNumber) || !Number.isInteger(isNumber)) {
       throw new Error("SBU id must be a valid integer");
     }
+    if (isNaN(isUser) || !Number.isInteger(isUser)) {
+      throw new Error("user id must be a valid integer");
+    }
     if (!name) {
       throw new Error("SBU name is required!");
+    }
+    if (!user) {
+      throw new Error("user id is required!");
     }
     try {
       const data = await prisma.sbu.findUnique({
@@ -76,6 +113,7 @@ class SbuRepo {
         },
         data: {
           sbuName: name,
+          createdBy: user,
           updatedAt: new Date(),
         },
       });

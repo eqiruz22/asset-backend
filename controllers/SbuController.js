@@ -63,10 +63,10 @@ export const getSbuById = async (req, res) => {
 };
 
 export const updateSbu = async (req, res) => {
-  const { name } = req.body;
+  const { name, user } = req.body;
   const id = req.params.id;
   try {
-    const data = await sbuRepo.update(name, id);
+    const data = await sbuRepo.update(name, user, id);
     return res.status(200).json({
       result: data,
     });
