@@ -8,6 +8,7 @@ import SbuRoute from "./routes/SbuRoute.js";
 import RoleRoute from "./routes/RoleRoute.js";
 import TypeRoute from "./routes/TypeRoute.js";
 import AssetRoute from "./routes/AssetRoute.js";
+import DivisiRoute from "./routes/DivisiRoute.js";
 dotenv.config();
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(SbuRoute);
 app.use(RoleRoute);
 app.use(TypeRoute);
 app.use(AssetRoute);
+app.use(DivisiRoute);
 
 app.listen(process.env.APP_PORT, () => {
   console.log(`server running on port ${process.env.APP_PORT}`);
