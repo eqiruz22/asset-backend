@@ -21,12 +21,15 @@ model Product {
 }
 
 model Type {
-  id        Int       @id @default(autoincrement())
-  name      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?
-  productId Int
-  product   Product   @relation(fields: [productId], references: [id])
+  id         Int       @id @default(autoincrement())
+  name       String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime?
+  productId  Int
+  categoryId Int
+  product    Product   @relation(fields: [productId], references: [id])
+  category   Category  @relation(fields: [categoryId], references: [id])
+  asset      Asset[]
 }
 
 model Status {
@@ -46,8 +49,10 @@ model Asset {
   updatedAt     DateTime?
   spesification String
   categoryId    Int
+  typeId        Int
   statusId      Int
   category      Category  @relation(fields: [categoryId], references: [id])
+  type          Type      @relation(fields: [typeId], references: [id])
   status        Status    @relation(fields: [statusId], references: [id])
 }
 
@@ -68,6 +73,7 @@ model Category {
   categoryName String
   createdAt    DateTime  @default(now())
   updatedAt    DateTime?
+  type         Type[]
   asset        Asset[]
 }
 
@@ -78,6 +84,7 @@ model Sbu {
   updatedAt DateTime?
   user      Users     @relation(fields: [createdBy], references: [id])
   createdBy Int       @default(0)
+  divisi    Divisi[]
 }
 
 model Role {
@@ -85,4 +92,12 @@ model Role {
   roleName  String
   createdAt DateTime @default(now())
   user      Users[]
+}
+
+model Divisi {
+  id         Int      @id @default(autoincrement())
+  divisiName String   @unique
+  createdAt  DateTime @default(now())
+  sbuId      Int
+  sbu        Sbu      @relation(fields: [sbuId], references: [id])
 }

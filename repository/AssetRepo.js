@@ -5,21 +5,49 @@ const prisma = new PrismaClient();
 class AssetRepository {
   async findAll() {
     try {
-      const data = await prisma.asset.findMany();
+      const data = await prisma.asset.findMany({
+        select: {
+          id: true,
+          usedBy: true,
+          serialNumber: true,
+          spesification: true,
+          createdAt: true,
+          updatedAt: true,
+          category: {
+            select: {
+              categoryName: true,
+            },
+          },
+          type: {
+            select: {
+              name: true,
+            },
+          },
+          status: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
       return data;
     } catch (error) {
       throw error;
     }
   }
 
-  async create(used, tag, serialNumber, spesification, category, status) {
-    const isCategory = Number(category);
+  async create(used, tag, serialNumber, spesification, category, type, status) {
+    const isType = Number(type);
     const isStatus = Number(status);
-    if (isNaN(isCategory) || !Number.isInteger(isCategory)) {
-      throw new Error("category id must be a valid integer");
+    const isCategory = Number(category);
+    if (isNaN(isType) || !Number.isInteger(isType)) {
+      throw new Error("type id must be a valid integer");
     }
     if (isNaN(isStatus) || !Number.isInteger(isStatus)) {
       throw new Error("status id must be a valid integer");
+    }
+    if (isNaN(isCategory) || !Number.isInteger(isCategory)) {
+      throw new Error("category id must be a valid integer");
     }
     if (!used) {
       throw new Error("used by user is required!");
@@ -33,10 +61,13 @@ class AssetRepository {
     if (!spesification) {
       throw new Error("spesification is required!");
     }
-    if (!isCategory) {
+    if (!category) {
       throw new Error("category id is required!");
     }
-    if (!isStatus) {
+    if (!type) {
+      throw new Error("type id is required!");
+    }
+    if (!status) {
       throw new Error("status id is required!");
     }
     try {
@@ -47,6 +78,7 @@ class AssetRepository {
           serialNumber: serialNumber,
           spesification: spesification,
           categoryId: category,
+          typeId: type,
           statusId: status,
         },
       });
@@ -76,15 +108,28 @@ class AssetRepository {
     }
   }
 
-  async update(used, tag, serialNumber, spesification, category, status, id) {
-    const isCategory = Number(category);
+  async update(
+    used,
+    tag,
+    serialNumber,
+    spesification,
+    category,
+    type,
+    status,
+    id
+  ) {
+    const isType = Number(type);
     const isStatus = Number(status);
     const isNumber = Number(id);
+    const isCategory = Number(category);
     if (isNaN(isNumber) || !Number.isInteger(isNumber)) {
       throw new Error("asset id must be a valid integer");
     }
     if (isNaN(isCategory) || !Number.isInteger(isCategory)) {
       throw new Error("category id must be a valid integer");
+    }
+    if (isNaN(isType) || !Number.isInteger(isType)) {
+      throw new Error("type id must be a valid integer");
     }
     if (isNaN(isStatus) || !Number.isInteger(isStatus)) {
       throw new Error("status id must be a valid integer");
@@ -101,10 +146,13 @@ class AssetRepository {
     if (!spesification) {
       throw new Error("spesification is required!");
     }
-    if (!isCategory) {
+    if (!category) {
       throw new Error("category id is required!");
     }
-    if (!isStatus) {
+    if (!type) {
+      throw new Error("type id is required!");
+    }
+    if (!type) {
       throw new Error("status id is required!");
     }
     try {
@@ -126,6 +174,7 @@ class AssetRepository {
           serialNumber: serialNumber,
           spesification: spesification,
           categoryId: category,
+          typeId: type,
           statusId: status,
         },
       });

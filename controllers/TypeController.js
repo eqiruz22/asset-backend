@@ -41,9 +41,9 @@ export const getTypeById = async (req, res) => {
 };
 
 export const insertType = async (req, res) => {
-  const { name, product } = req.body;
+  const { name, product, category } = req.body;
   try {
-    const data = await typeRepo.create(name, product);
+    const data = await typeRepo.create(name, product, category);
     return res.status(200).json({
       result: data,
     });
@@ -61,9 +61,9 @@ export const insertType = async (req, res) => {
 };
 
 export const updateType = async (req, res) => {
-  const { name, product } = req.body;
+  const { name, product, category } = req.body;
   try {
-    const data = await typeRepo.update(id, name, product);
+    const data = await typeRepo.update(id, name, product, category);
     return res.status(200).json({
       result: data,
     });

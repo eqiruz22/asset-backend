@@ -3,21 +3,33 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class TypeRepository {
-  async create(name, product) {
+  async create(name, product, category) {
     const isNumber = Number(product);
+    const isCategory = Number(category);
     if (isNaN(isNumber) || !Number.isInteger(isNumber)) {
       throw new Error("product id must be a valid integer");
     }
+    if (isNaN(isCategory) || !Number.isInteger(isCategory)) {
+      throw new Error("category id must be a valid integer");
+    }
     if (!name) {
       throw new Error("type name is required!");
+    }
+    if (!product) {
+      throw new Error("product id is required!");
+    }
+    if (!category) {
+      throw new Error("category id is required!");
     }
     try {
       await prisma.type.create({
         data: {
           name: name,
           productId: product,
+          categoryId: category,
         },
       });
+      return `success create`;
     } catch (error) {
       throw error;
     }
@@ -33,10 +45,12 @@ class TypeRepository {
           updatedAt: true,
           product: {
             select: {
-              id: true,
               manufacture: true,
-              createdAt: true,
-              updatedAt: true,
+            },
+          },
+          category: {
+            select: {
+              categoryName: true,
             },
           },
         },
@@ -57,6 +71,22 @@ class TypeRepository {
         where: {
           id: isNumber,
         },
+        select: {
+          id: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true,
+          product: {
+            select: {
+              manufacture: true,
+            },
+          },
+          category: {
+            select: {
+              categoryName: true,
+            },
+          },
+        },
       });
       if (!data) {
         throw new Error(`type id ${id} not found`);
@@ -67,20 +97,27 @@ class TypeRepository {
     }
   }
 
-  async update(id, name, product) {
+  async update(id, name, product, category) {
     const isNumber = Number(id);
     const isProduct = Number(product);
-    if (!isNaN(isNumber) || !Number.isInteger(isNumber)) {
+    const isCategory = Number(category);
+    if (isNaN(isNumber) || !Number.isInteger(isNumber)) {
       throw new Error("type id must be a valid integer");
     }
-    if (!isNaN(isProduct) || !Number.isInteger(isProduct)) {
+    if (isNaN(isProduct) || !Number.isInteger(isProduct)) {
       throw new Error("product id must be a valid integer");
+    }
+    if (isNaN(isCategory) || !Number.isInteger(isCategory)) {
+      throw new Error("category id must be a valid integer");
     }
     if (!name) {
       throw new Error("type name is required!");
     }
     if (!product) {
       throw new Error("product id is required!");
+    }
+    if (!category) {
+      throw new Error("category id is required!");
     }
     try {
       const data = await prisma.type.findUnique({
@@ -98,6 +135,7 @@ class TypeRepository {
         data: {
           name: name,
           productId: product,
+          categroyId: category,
         },
       });
       return `update success`;
